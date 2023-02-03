@@ -2,7 +2,7 @@ const Discord = require('discord.js')
 
 module.exports = {
     name: "degage",
-    description: "ble membre a virer",
+    description: "le membre a virer",
     permission: Discord.PermissionFlagsBits.BanMembers,
     dm: false,
     options: [
@@ -26,7 +26,7 @@ module.exports = {
         try{
 
             let user =  await bot.users.fetch(args._hoistedoptions[0].value)
-            if(!user) return message.reply('PAs de membre à bannir ')
+            if(!user) return message.reply('Pas de membre à bannir ')
             let member = message.guild.members.cache.get(user.id)
 
             let reason =  args.get('reason').value
