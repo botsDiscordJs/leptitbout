@@ -8,7 +8,7 @@ module.exports = {
     // options: [],
 
 
-    async run(bot, message){
+    async run(bot, message, args){
         await message.reply(`Les roux ils sont trop beaux ! A oui ton ping c'est : \`${bot.ws.ping}\``)
     }
 }
