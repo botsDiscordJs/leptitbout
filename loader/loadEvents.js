@@ -8,5 +8,6 @@ module.exports = async bot => {
         let event = require(`../events/${file}`)
         
         bot.on(file.split(".js").join(""), event.bind(null, bot))
+        console.log(`Event ${file} chargé avec succés !`)
     })
 }
