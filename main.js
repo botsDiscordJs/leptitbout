@@ -163,5 +163,28 @@ bot.on('messageCreate', async msg=> {
       
 });
 
+bot.on('messageCreate', async msg=> {
+    if (msg.content.startsWith('/teams')) {
+        const members = msg.mentions.users;
+        
+        if (members.size < 2) {
+          msg.reply('Please mention at least two users.');
+          return;
+        }
+        
+        const shuffledMembers = Array.from(members.values()).sort(() => Math.random() - 0.5);
+        const team1 = shuffledMembers.slice(0, Math.ceil(shuffledMembers.length / 2));
+        const team2 = shuffledMembers.slice(Math.ceil(shuffledMembers.length / 2));
+        
+        msg.reply(`Team 1: ${team1.map(member => member.username).join(', ')}\nTeam 2: ${team2.map(member => member.username).join(', ')}`);
+      }
+      
+});
+
+bot.on('messageCreate', async msg=> {
+    
+      
+});
+
 
 bot.login(config.token)
