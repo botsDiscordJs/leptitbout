@@ -94,7 +94,7 @@ bot.on('messageCreate', async msg=> {
 //mute voice of user
 bot.on('messageCreate', async msg=> {
 
-if (msg.content.startsWith('/vmute')) {
+if (msg.content.startsWith('/vmute') || msg.content.startsWith('/chut') ) {
     const user = msg.mentions.users.first();
     const time = msg.content.split(' ')[2];
     
@@ -112,21 +112,55 @@ if (msg.content.startsWith('/vmute')) {
     if (!member) return;
     
     msg.guild.channels.cache.forEach(channel => {
-      if (channel.members.has(user.id)) {
+      if (channel.members.has(user.id) && channel.type ===2) {
         channel.members.get(user.id).voice.setMute(true)
           .then(() => {
-            msg.reply(`Muted ${user.username}'s voice for ${time} seconds.`);
+            msg.reply(`Muted ${user.username}'s voice for ${time} seconds. (${channel.name})`);
             setTimeout(() => {
               channel.members.get(user.id).voice.setMute(false)
-                .then(() => msg.reply(`Unmuted ${user.username}'s voice.`))
-                .catch(console.error);
+                .then(() => msg.reply(`Unmuted ${user.username}'s voice. (${channel.name})`))
+                .catch((error) => console.error);
             }, time * 1000);
           })
-          .catch(console.log(error));
+          .catch((error)=> console.log(error));
       }
     });
   }
   
+});
+
+//move all members in other channel
+bot.on('messageCreate', async msg=> {
+    if (msg.content.startsWith('/cmove')) {
+        const sourceVoiceChannelName = msg.content.split(' ')[1];
+        const destinationVoiceChannelName = msg.content.split(' ')[2];
+        
+        if (!sourceVoiceChannelName || !destinationVoiceChannelName) {
+          msg.reply('Please specify the source voice channel and the destination voice channel.');
+          return;
+        }
+        
+        const sourceVoiceChannel = msg.guild.channels.cache.find(channel => channel.name === sourceVoiceChannelName && channel.type === 2);
+        const destinationVoiceChannel = msg.guild.channels.cache.find(channel => channel.name === destinationVoiceChannelName && channel.type === 2);
+        
+        if (!sourceVoiceChannel) {
+          msg.reply(`Could not find the source voice channel "${sourceVoiceChannelName}".`);
+          return;
+        }
+        
+        if (!destinationVoiceChannel) {
+          msg.reply(`Could not find the destination voice channel "${destinationVoiceChannelName}".`);
+          return;
+        }
+        
+        sourceVoiceChannel.members.forEach(member => {
+            member.voice.setChannel(destinationVoiceChannel)
+            .catch(console.error);
+        });
+        
+        msg.reply(`Moved all members from "${sourceVoiceChannelName}" to "${destinationVoiceChannelName}".`);
+      }
+      
 });
 
 
